@@ -25,15 +25,13 @@ No theory, just a working pipeline using Flink + Kafka + Docker Compose.
 
 Make sure you have Java + Maven installed.
 
-```bash
-mvn clean package
+`mvn clean package`
 
 This creates target/flink-filter.jar
 
 ### 2. Bring the stack up
 
-```bash
-docker compose up
+`docker compose up`
 
 This brings up:
 	•	Kafka
