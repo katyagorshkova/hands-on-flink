@@ -13,7 +13,7 @@ No theory, just a working pipeline using Flink + Kafka + Docker Compose.
 
 ---
 
-## 🔧 Project Structure
+## Project Structure
 ├── docker-compose.yml         # Flink + Kafka + AKHQ setup
 ├── src/main/java/…            # Java code for the Flink job
 └── pom.xml                    # Maven config with dependencies
