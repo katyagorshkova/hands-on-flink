@@ -1,8 +1,9 @@
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
-  name: flink-filter-session
+  name: flink-sql-session
 spec:
+  mode: native
   image: localhost:5001/flink-sql
   imagePullPolicy: Always
   flinkVersion: v1_20
