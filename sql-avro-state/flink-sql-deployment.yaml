@@ -1,0 +1,31 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: flink-sql-session
+spec:
+  mode: native
+  image: localhost:5001/flink-avro-state:1.20.3
+  imagePullPolicy: Always
+  flinkVersion: v1_20
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: "2"
+    # State backend
+    state.backend: rocksdb
+    state.backend.incremental: "true"
+    #Checkpoints & savepoints
+    state.checkpoints.dir: s3://flink/checkpoints
+    state.savepoints.dir: s3://flink/savepoints
+    # S3 (MinIO) config
+    s3.endpoint: http://minio.minio:9000
+    s3.access-key: minioadmin
+    s3.secret-key: minioadmin
+    s3.path.style.access: "true"
+  serviceAccount: flink
+  jobManager:
+    resource:
+      memory: "2048m"
+      cpu: 0.5
+  taskManager:
+    resource:
+      memory: "2048m"
+      cpu: 0.5
