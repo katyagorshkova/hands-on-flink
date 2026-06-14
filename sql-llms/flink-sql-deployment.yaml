@@ -1,0 +1,20 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: flink-sql-session
+spec:
+  mode: native
+  image: localhost:5001/flink-ai-demo:2.1.2
+  imagePullPolicy: Always
+  flinkVersion: v2_1
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: "2"
+  serviceAccount: flink
+  jobManager:
+    resource:
+      memory: "2048m"
+      cpu: 0.5
+  taskManager:
+    resource:
+      memory: "2048m"
+      cpu: 0.5
