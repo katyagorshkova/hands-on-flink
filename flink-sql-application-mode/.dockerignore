@@ -1,0 +1,7 @@
+target/
+!target/flink-sql-runner.jar
+.git/
+.idea/
+.vscode/
+*.iml
+.DS_Store
