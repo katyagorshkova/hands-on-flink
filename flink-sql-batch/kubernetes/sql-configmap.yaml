@@ -33,7 +33,7 @@ data:
     SELECT
         product_id,
         COUNT(*) AS transaction_count,
-        SUM(amount) AS total_amount
+        CAST(SUM(amount) AS DECIMAL(20, 2)) AS total_amount
     FROM transactions
     WHERE created_tst >= TIMESTAMP '${PROCESSING_DATE} 00:00:00'
       AND created_tst < TIMESTAMP '${PROCESSING_DATE} 00:00:00' + INTERVAL '1' DAY
