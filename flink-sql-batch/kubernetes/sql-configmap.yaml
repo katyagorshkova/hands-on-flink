@@ -21,8 +21,7 @@ data:
     CREATE TABLE daily_product_summary (
         product_id BIGINT,
         transaction_count BIGINT,
-        total_amount DECIMAL(20, 2),
-        average_amount DECIMAL(20, 2)
+        total_amount DECIMAL(20, 2)
     ) WITH (
         'connector' = 'kafka',
         'topic' = 'daily-product-summary',
@@ -34,8 +33,7 @@ data:
     SELECT
         product_id,
         COUNT(*) AS transaction_count,
-        SUM(amount) AS total_amount,
-        AVG(amount) AS average_amount
+        SUM(amount) AS total_amount
     FROM transactions
     WHERE created_tst >= TIMESTAMP '${PROCESSING_DATE} 00:00:00'
       AND created_tst < TIMESTAMP '${PROCESSING_DATE} 00:00:00' + INTERVAL '1' DAY
