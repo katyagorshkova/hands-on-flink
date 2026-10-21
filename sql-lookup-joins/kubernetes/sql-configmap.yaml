@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flink-sql-job
+  namespace: flink
+data:
+  job.sql: |
+    CREATE TABLE orders (
+        order_id BIGINT,
+        customer_id STRING,
+        price DECIMAL(10, 2),
+        proc_time AS PROCTIME()
+    ) WITH (
+        'connector' = 'kafka',
+        'topic' = 'orders',
+        'properties.bootstrap.servers' = 'host.docker.internal:9092',
+        'properties.group.id' = 'flink-lookup-join',
+        'scan.startup.mode' = 'earliest-offset',
+        'format' = 'json'
+    );
+
+    CREATE TABLE customer_discounts (
+        customer_id STRING,
+        discount DECIMAL(5, 2),
+        PRIMARY KEY (customer_id) NOT ENFORCED
+    ) WITH (
+        'connector' = 'jdbc',
+        'url' = 'jdbc:postgresql://host.docker.internal:54321/postgres',
+        'table-name' = 'customer_discounts',
+        'username' = 'postgres',
+        'password' = 'postgres'
+    );
+
+    CREATE TABLE discounted_orders (
+        order_id BIGINT,
+        customer_id STRING,
+        price DECIMAL(10, 2),
+        discount DECIMAL(5, 2),
+        discountedPrice DECIMAL(10, 2)
+    ) WITH (
+        'connector' = 'kafka',
+        'topic' = 'discounted-orders',
+        'properties.bootstrap.servers' = 'host.docker.internal:9092',
+        'format' = 'json'
+    );
+
+    INSERT INTO discounted_orders
+    SELECT
+        o.order_id,
+        o.customer_id,
+        o.price,
+        COALESCE(d.discount, CAST(0 AS DECIMAL(5, 2))),
+        CAST(
+            o.price * (1 - COALESCE(d.discount, 0) / 100)
+            AS DECIMAL(10, 2)
+        ) AS discountedPrice
+    FROM orders AS o
+    LEFT JOIN customer_discounts
+        FOR SYSTEM_TIME AS OF o.proc_time AS d
+        ON o.customer_id = d.customer_id;
