@@ -10,6 +10,9 @@ spec:
   serviceAccount: flink
   flinkConfiguration:
     taskmanager.numberOfTaskSlots: "1"
+    restart-strategy.type: fixed-delay
+    restart-strategy.fixed-delay.attempts: "10"
+    restart-strategy.fixed-delay.delay: "10 s"
   podTemplate:
     metadata:
       annotations:
