@@ -1,7 +1,7 @@
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
-  name: products-filter
+  name: lookup-join
   namespace: flink
 spec:
   image: localhost:5001/flink-sql-runner:latest
